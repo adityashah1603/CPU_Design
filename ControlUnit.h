@@ -18,24 +18,26 @@ typedef enum {
 } ALUOperations;
 
 struct ControlSignals{
-    bool RegDst;
-    bool ALUSrc;
-    bool MemToReg;
-    bool RegWrite;
-    bool MemRead;
-    bool MemWrite;
-    bool Branch;
-    bool Jump;
-    ALUOperations AluOp;
+    bool RegDst = false;
+    bool ALUSrc = false;
+    bool MemToReg = false;
+    bool RegWrite = false;
+    bool MemRead = false;
+    bool MemWrite = false;
+    bool Branch = false;
+    bool Jump = false;
+    ALUOperations AluOp = ALU_ADD;
 };
 
 class ControlUnit {
 public:
-    void setOpcode(uint8_t opcode);
-    void setFunct(uint8_t funct);
+    void setOpcode(uint8_t inputOpcode);
+    void setFunct(uint8_t inputFunct);
     ControlSignals generateControls();
 private:
     uint8_t opcode;
     uint8_t funct;
     ControlSignals control;
+
+    void clearControlSignals();
 };
