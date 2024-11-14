@@ -21,15 +21,15 @@ void ControlUnit::setFunct(uint8_t inputFunct) {
 }
 
 void ControlUnit::clearControlSignals() {
-    control.RegDst = false;
-    control.ALUSrc = false;
-    control.MemToReg = false;
-    control.RegWrite = false;
-    control.MemRead = false;
-    control.MemWrite = false;
-    control.Branch = false;
-    control.Jump = false;
-    control.AluOp = ALU_ADD;
+    control.RegDst;
+    control.ALUSrc;
+    control.MemToReg;
+    control.RegWrite;
+    control.MemRead;
+    control.MemWrite;
+    control.Branch;
+    control.Jump;
+    control.AluOp;
 }
 
 ControlSignals ControlUnit::generateControls() {
@@ -66,6 +66,6 @@ ControlSignals ControlUnit::generateControls() {
 
     case(0b1111):
 
-    
+
     }
 }
