@@ -14,19 +14,19 @@ typedef enum {
     ALU_SLT,
     ALU_SGT,
     ALU_SLL,
-    SLU_SRL
+    ALU_SRL
 } ALUOperations;
 
 struct ControlSignals{
-    bool RegDst = false;
-    bool ALUSrc = false;
-    bool MemToReg = false;
-    bool RegWrite = false;
-    bool MemRead = false;
-    bool MemWrite = false;
-    bool Branch = false;
-    bool Jump = false;
-    ALUOperations AluOp = ALU_ADD;
+    bool dm2reg;
+    bool reg_dst;
+    bool alu_src;
+    bool jump;
+    bool branch;
+    bool pc_src;
+    bool we_dm;
+    bool we_reg;
+    ALUOperations alu_ctrl;
 };
 
 class ControlUnit {
@@ -37,7 +37,10 @@ public:
 private:
     uint8_t opcode;
     uint8_t funct;
+    uint8_t alu_op;
     ControlSignals control;
 
+
     void clearControlSignals();
+    ALUOperations functToALUOperation(const uint8_t funct);
 };
