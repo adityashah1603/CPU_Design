@@ -33,7 +33,9 @@ class ControlUnit {
 public:
     void setOpcode(uint8_t inputOpcode);
     void setFunct(uint8_t inputFunct);
-    ControlSignals generateControls();
+    void printControls() const;
+    void decodeOpcode();
+    ControlSignals getControlSignals() const { return control; }
 private:
     uint8_t opcode;
     uint8_t funct;
