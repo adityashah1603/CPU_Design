@@ -14,28 +14,35 @@ typedef enum {
     ALU_SLT,
     ALU_SGT,
     ALU_SLL,
-    SLU_SRL
+    ALU_SRL
 } ALUOperations;
 
 struct ControlSignals{
-    bool RegDst;
-    bool ALUSrc;
-    bool MemToReg;
-    bool RegWrite;
-    bool MemRead;
-    bool MemWrite;
-    bool Branch;
-    bool Jump;
-    ALUOperations AluOp;
+    bool dm2reg;
+    bool reg_dst;
+    bool alu_src;
+    bool jump;
+    bool branch;
+    bool pc_src;
+    bool we_dm;
+    bool we_reg;
+    ALUOperations alu_ctrl;
 };
 
 class ControlUnit {
 public:
-    void setOpcode(uint8_t opcode);
-    void setFunct(uint8_t funct);
-    ControlSignals generateControls();
+    void setOpcode(uint8_t inputOpcode);
+    void setFunct(uint8_t inputFunct);
+    void printControls() const;
+    void decodeOpcode();
+    ControlSignals getControlSignals() const { return control; }
 private:
     uint8_t opcode;
     uint8_t funct;
+    uint8_t alu_op;
     ControlSignals control;
+
+
+    void clearControlSignals();
+    ALUOperations functToALUOperation(const uint8_t funct);
 };
