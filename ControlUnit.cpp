@@ -7,6 +7,21 @@ using std::cout;
 using std::endl;
 using std::bitset;
 
+ControlUnit::ControlUnit() {
+    opcode = 0b0000;
+    funct = 0b0000;
+    alu_op = 0b00;
+    control.dm2reg = false;
+    control.reg_dst = false;
+    control.alu_src = false;
+    control.jump = false;
+    control.branch = false;
+    control.pc_src = false;
+    control.we_dm = false;
+    control.we_reg = false;
+    control.alu_ctrl = ALU_ADD;
+}
+
 void ControlUnit::setOpcode(uint8_t inputOpcode) {
     if(inputOpcode > 0b1111) {
         cerr << "Error writing opcode. Out of range." << endl;
@@ -173,8 +188,6 @@ void ControlUnit::decodeOpcode() {
         control.alu_ctrl = functToALUOperation(funct);
         break;
     }
-    
-    return control;
 }
 
 void ControlUnit::printControls() const {

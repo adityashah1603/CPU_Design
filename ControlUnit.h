@@ -31,11 +31,13 @@ struct ControlSignals{
 
 class ControlUnit {
 public:
+    ControlUnit();
     void setOpcode(uint8_t inputOpcode);
     void setFunct(uint8_t inputFunct);
     void printControls() const;
     void decodeOpcode();
     ControlSignals getControlSignals() const { return control; }
+
 private:
     uint8_t opcode;
     uint8_t funct;
