@@ -44,6 +44,7 @@ unordered_map<string, string> op_code_mapping = {
     {"div", "0000"},
     {"slt", "0000"},
     {"sgt", "0000"},
+    {"seq", "0000"},
     {"sll", "0000"},
     {"srl", "0000"},
     {"sw", "0001"},
@@ -70,8 +71,9 @@ unordered_map<string, string> func_code_mapping = {
         {"div", "0111"},
         {"slt", "1000"},
         {"sgt", "1001"},
-        {"sll", "1010"},
-        {"srl", "1011"}
+        {"seq", "1010"},
+        {"sll", "1011"},
+        {"srl", "1100"}
     };
 
 void saveToFile(const std::vector<std::string>& strings, const std::string& filename) {
