@@ -74,6 +74,25 @@ unordered_map<string, string> func_code_mapping = {
         {"srl", "1011"}
     };
 
+void saveToFile(const std::vector<std::string>& strings, const std::string& filename) {
+    // Open the output file stream
+    std::ofstream outfile(filename);
+
+    // Check if the file was opened successfully
+    if (!outfile.is_open()) {
+        std::cerr << "Error: Could not open the file " << filename << " for writing." << std::endl;
+        return;
+    }
+
+    // Write each string to a separate line in the file
+    for (const auto& str : strings) {
+        outfile << str << std::endl;
+    }
+
+    // Close the file stream
+    outfile.close();
+}
+
 int main() {
     // Input file name
     std::string filename;
@@ -138,6 +157,9 @@ int main() {
         std::cout << instr << std::endl;
         binary.push_back(instr);
     }
-
+    std::cout << "Enter the name of the output file: ";
+    std::cin >> filename;
+    saveToFile(binary, filename);
+    
     return 0;
 }
