@@ -18,4 +18,6 @@ public:
 private:
     ifstream InstructionFile;
     vector<uint16_t> instructions;
+    int instructionCount;
+    bool instructionsLoaded;
 };
