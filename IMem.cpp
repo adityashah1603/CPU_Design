@@ -8,21 +8,41 @@ using std::stoi;
 using std::cerr;
 using std::endl;
 
-uint16_t InstructionMemory::getInstruction(const uint16_t &address) {
-    uint16_t instruction {0b0};
-    string FileLine;
+InstructionMemory::InstructionMemory() {
+    instructions.resize(UINT16_MAX);
+}
 
-    if(InstructionFile.is_open()) {
-        InstructionFile.seekg(std::ios::beg);
-        for(int line {0}; line <= address; line++) {
-            getline(InstructionFile, FileLine);
-        }
+InstructionMemory::InstructionMemory(const char* filename) { 
+    InstructionFile.open(filename); 
+    if(!InstructionFile.is_open()) {
 
-        instruction = stoi(FileLine,0,16);
+    }
+    instructions.resize(UINT16_MAX);
+}
+void InstructionMemory::openInstructionFile(const char* filename) {
+    InstructionFile.open(filename);
+    if(!InstructionFile.is_open()) {
+        cerr << "Error: Instruction File could not be opened." << endl;
+    }
+}
+
+void InstructionMemory::loadInstructionsFromFile() {
+    if(!InstructionFile.is_open()) {
+        cerr << "Error: Instruction File could not be opened." << endl;
     }
     else {
-        cerr << "Error reading instruction. Instruction File not specified!" << endl;
-    }
+        string fileLine;
+        uint16_t instructionAddress {0};
+        while(getline(InstructionFile, fileLine))
+            instructions[instructionAddress] = stoi(fileLine, 0, 16); // Stores instructions in hex format
+            instructionAddress++;
+        }
+}
 
-    return instruction;
+uint16_t InstructionMemory::getInstruction(const uint16_t &address) {
+    uint16_t returnInstruction {0b0};
+    if(address < UINT16_MAX) {
+        returnInstruction = instructions[address];
+    }
+    return returnInstruction;
 }
