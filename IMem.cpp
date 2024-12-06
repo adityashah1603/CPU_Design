@@ -24,22 +24,25 @@ InstructionMemory::InstructionMemory(const char* filename) {
     instructionsLoaded = false;
 }
 
-void InstructionMemory::openInstructionFile(const char* filename) {
+bool InstructionMemory::openInstructionFile(const char* filename) {
     InstructionFile.open(filename);
     if(!InstructionFile.is_open()) {
         cerr << "Error: Instruction File could not be opened." << endl;
+        return false;
     }
+    else
+        return true;
 }
 
 void InstructionMemory::loadInstructionsFromFile() {
     if(!InstructionFile.is_open()) {
-        cerr << "Error: Instruction File could not be opened." << endl;
+        cerr << "Error: Instruction File isn't open!." << endl;
     }
     else {
         string fileLine;
         uint16_t instructionAddress {0};
         while(getline(InstructionFile, fileLine)) {
-            instructions[instructionAddress] = stoi(fileLine, 0, 16); // Stores instructions in hex format
+            instructions[instructionAddress] = stoi(fileLine, 0, 2); // Stores instructions in binary format
             instructionAddress++;
             instructionCount++;
         }

@@ -12,7 +12,7 @@ public:
     InstructionMemory();
     InstructionMemory(const char* filename);
     ~InstructionMemory() { InstructionFile.close(); }
-    void openInstructionFile(const char* filename);
+    bool openInstructionFile(const char* filename);
     void loadInstructionsFromFile();
     uint16_t getInstruction(const uint16_t &address);
 private:
