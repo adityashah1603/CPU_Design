@@ -115,7 +115,7 @@ void ControlUnit::decodeOpcode() {
         alu_op = 0b10;
         break;
 
-    case(0b0001): // Load Instruction
+    case(0b0010): // Load Instruction
         control.dm2reg = true;
         control.reg_dst = false;
         control.alu_src = true;
@@ -127,7 +127,7 @@ void ControlUnit::decodeOpcode() {
         alu_op = 0b00;
         break;
 
-    case(0b0010): // Save Instruction
+    case(0b0001): // Save Instruction
         control.dm2reg = false;
         control.reg_dst = false;
         control.alu_src = true;

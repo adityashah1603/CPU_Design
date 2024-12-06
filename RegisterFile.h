@@ -10,12 +10,9 @@ private:
     std::vector<uint16_t> registers; // Array to hold the registers
     bool we_reg;
 public:
-    RegisterFile(int numRegisters) {
-        registers.resize(numRegisters, 0); // Initialize all registers to 0
-        we_reg = false;
-    }
+    RegisterFile(int numRegisters);
 
-    void writeRegister(int regNum, uint16_t value);
-    uint16_t readRegister(int regNum);
+    void writeRegister(uint16_t regNum, uint16_t value);
+    uint16_t readRegister(uint16_t regNum);
     void displayRegisters();
 };
