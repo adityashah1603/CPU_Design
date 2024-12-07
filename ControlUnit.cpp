@@ -8,18 +8,20 @@ using std::endl;
 using std::bitset;
 
 ControlUnit::ControlUnit() {
-    opcode = 0b0000;
-    funct = 0b0000;
-    alu_op = 0b00;
-    control.dm2reg = false;
-    control.reg_dst = false;
-    control.alu_src = false;
-    control.jump = false;
-    control.branch = false;
-    control.pc_src = false;
-    control.we_dm = false;
-    control.we_reg = false;
-    control.alu_ctrl = ALU_ADD;
+    opcode = funct = alu_op = 0;
+    clearControlSignals();
+    // opcode = 0b0000;
+    // funct = 0b0000;
+    // alu_op = 0b00;
+    // control.dm2reg = false;
+    // control.reg_dst = false;
+    // control.alu_src = false;
+    // control.jump = false;
+    // control.branch = false;
+    // control.pc_src = false;
+    // control.we_dm = false;
+    // control.we_reg = false;
+    // control.alu_ctrl = ALU_ADD;
 }
 
 void ControlUnit::setOpcode(uint8_t inputOpcode) {
@@ -39,15 +41,16 @@ void ControlUnit::setFunct(uint8_t inputFunct) {
 }
 
 void ControlUnit::clearControlSignals() {
-    control.dm2reg = false;
-    control.reg_dst = false;
-    control.alu_src = false;
-    control.jump = false;
-    control.branch = false;
-    control.pc_src = false;
-    control.we_dm = false;
-    control.we_reg = false;
-    control.alu_ctrl = ALU_ADD;
+    control = {false, false, false, false, false, false, false, false, ALU_ADD};
+    // control.dm2reg = false;
+    // control.reg_dst = false;
+    // control.alu_src = false;
+    // control.jump = false;
+    // control.branch = false;
+    // control.pc_src = false;
+    // control.we_dm = false;
+    // control.we_reg = false;
+    // control.alu_ctrl = ALU_ADD;
 }
 
 ALUOperations ControlUnit::functToALUOperation(const uint8_t funct) {
@@ -92,102 +95,129 @@ ALUOperations ControlUnit::functToALUOperation(const uint8_t funct) {
         returnOperation = ALU_SRL;
         break;
     default:
-        returnOperation = ALU_ADD;
-        break;
+        // returnOperation = ALU_ADD;
+        cerr<<"Error: Invalid function code"<<endl;
+        throw invalid_argument("Invalid function code");
+        // break;
     }
 
-    return returnOperation;
+    // return returnOperation;
 }
 
 void ControlUnit::decodeOpcode() {
     clearControlSignals();
     switch(opcode) {
     
-    case(0b0000): // R-Type Instruction
-        control.dm2reg = false;
-        control.reg_dst = true;
-        control.alu_src = false;
-        control.jump = false;
-        control.branch = false;
-        control.pc_src = false;
-        control.we_dm = false;
-        control.we_reg = true;
-        alu_op = 0b10;
-        break;
+    // case(0b0000): // R-Type Instruction
+    //     control.dm2reg = false;
+    //     control.reg_dst = true;
+    //     control.alu_src = false;
+    //     control.jump = false;
+    //     control.branch = false;
+    //     control.pc_src = false;
+    //     control.we_dm = false;
+    //     control.we_reg = true;
+    //     alu_op = 0b10;
+    //     break;
 
-    case(0b0001): // Load Instruction
-        control.dm2reg = true;
-        control.reg_dst = false;
-        control.alu_src = true;
-        control.jump = false;
-        control.branch = false;
-        control.pc_src = false;
-        control.we_dm = false;
-        control.we_reg = true;
-        alu_op = 0b00;
-        break;
+    // case(0b0001): // Load Instruction
+    //     control.dm2reg = true;
+    //     control.reg_dst = false;
+    //     control.alu_src = true;
+    //     control.jump = false;
+    //     control.branch = false;
+    //     control.pc_src = false;
+    //     control.we_dm = false;
+    //     control.we_reg = true;
+    //     alu_op = 0b00;
+    //     break;
 
-    case(0b0010): // Save Instruction
-        control.dm2reg = false;
-        control.reg_dst = false;
-        control.alu_src = true;
-        control.jump = false;
-        control.branch = false;
-        control.pc_src = false;
-        control.we_dm = true;
-        control.we_reg = false;
-        alu_op = 0b00;
-        break;
+    // case(0b0010): // Save Instruction
+    //     control.dm2reg = false;
+    //     control.reg_dst = false;
+    //     control.alu_src = true;
+    //     control.jump = false;
+    //     control.branch = false;
+    //     control.pc_src = false;
+    //     control.we_dm = true;
+    //     control.we_reg = false;
+    //     alu_op = 0b00;
+    //     break;
 
-    case(0b0011): // I-Type Instruction
-        control.dm2reg = false;
-        control.reg_dst = false;
-        control.alu_src = true;
-        control.jump = false;
-        control.branch = false;
-        control.pc_src = false;
-        control.we_dm = false;
-        control.we_reg = true;
-        alu_op = 0b00;
-        break;
+    // case(0b0011): // I-Type Instruction
+    //     control.dm2reg = false;
+    //     control.reg_dst = false;
+    //     control.alu_src = true;
+    //     control.jump = false;
+    //     control.branch = false;
+    //     control.pc_src = false;
+    //     control.we_dm = false;
+    //     control.we_reg = true;
+    //     alu_op = 0b00;
+    //     break;
 
-    case(0b0100): // Branch Instruction
-        control.dm2reg = false;
-        control.reg_dst = false;
-        control.alu_src = false;
-        control.jump = false;
-        control.branch = true;
-        control.pc_src = false;
-        control.we_dm = false;
-        control.we_reg = false;
-        alu_op = 0b01;
-        break;
+    // case(0b0100): // Branch Instruction
+    //     control.dm2reg = false;
+    //     control.reg_dst = false;
+    //     control.alu_src = false;
+    //     control.jump = false;
+    //     control.branch = true;
+    //     control.pc_src = false;
+    //     control.we_dm = false;
+    //     control.we_reg = false;
+    //     alu_op = 0b01;
+    //     break;
 
-    case(0b0101): // Jump Instruction
-        control.dm2reg = false;
-        control.reg_dst = false;
-        control.alu_src = false;
-        control.jump = true;
-        control.branch = false;
-        control.pc_src = false;
-        control.we_dm = false;
-        control.we_reg = false;
-        alu_op = 0b01;
-        break;
+    // case(0b0101): // Jump Instruction
+    //     control.dm2reg = false;
+    //     control.reg_dst = false;
+    //     control.alu_src = false;
+    //     control.jump = true;
+    //     control.branch = false;
+    //     control.pc_src = false;
+    //     control.we_dm = false;
+    //     control.we_reg = false;
+    //     alu_op = 0b01;
+    //     break;
+    case 0b0000: // R-Type
+            control = {false, true, false, false, false, false, false, true, functToALUOperation(funct)};
+            break;
+        case 0b0001: // Load
+            control = {true, false, true, false, false, false, false, true, ALU_ADD};
+            break;
+        case 0b0010: // Store
+            control = {false, false, true, false, false, false, true, false, ALU_ADD};
+            break;
+        case 0b0011: // Jump
+            control.jump = true;
+            break;
+        case 0b0100: // Branch
+            control.branch = true;
+            control.alu_ctrl = ALU_SUB;
+            break;
+        case 0b1000: // BIS
+            control = {false, false, true, false, false, false, false, false, ALU_BIS};
+            break;
+        case 0b1001: // BNS
+            control = {false, false, true, false, false, false, false, false, ALU_BNS};
+            break;
+        default:
+            cerr << "Error: Invalid opcode" << endl;
+            throw invalid_argument("Invalid opcode");
 
     }
 
-    switch(alu_op) {
-    case(0b00):
-        control.alu_ctrl = ALU_ADD;
-        break;
-    case(0b01):
-        control.alu_ctrl = ALU_SUB;
-        break;
-    default:
-        control.alu_ctrl = functToALUOperation(funct);
-        break;
-    }
+    // switch(alu_op) {
+    // case(0b00):
+    //     control.alu_ctrl = ALU_ADD;
+    //     break;
+    // case(0b01):
+    //     control.alu_ctrl = ALU_SUB;
+    //     break;
+    // default:
+    //     control.alu_ctrl = functToALUOperation(funct);
+    //     break;
+    // }
 }
 
 void ControlUnit::printControls() const {
