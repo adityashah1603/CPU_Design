@@ -14,7 +14,7 @@ using std::cerr;
 using std::endl;
 
 
-void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero) {
+void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero, int16_t& hi) {
     overflow = 0;
     switch (func) {
         case 0: // add
@@ -45,7 +45,9 @@ void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, boo
             result = op1 ^ op2;
             break;
         case 6: // mult
-            result = op1 * op2;
+            int32_t result32 = (int32_t)op1 * (int32_t)op2;
+            result = (int16_t)result32;
+            hi = (int16_t)(result32>>16);
             overflow = 0;
             break;
         case 7: // div
@@ -57,6 +59,7 @@ void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, boo
             }
             else{            
             result = op1 / op2;
+            hi = op1 % op2;
             overflow = 0;}
             break;
         case 8: // slt
