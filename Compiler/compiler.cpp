@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-
+#include <bitset>
 using namespace std;
 
 /*
@@ -56,7 +56,6 @@ unordered_map<string, string> op_code_mapping = {
     {"addi", "0111"},
     {"bis", "1000"},
     {"bns", "1001"},
-    {"lui", "1010"},
     {"li", "1011"}
 };
 
@@ -133,32 +132,62 @@ int main() {
     // Display the content of the 2D array
     std::cout << "\nBinary Representation:\n";
     for (const auto& row : instructions) {
-        int iteration = 0;
-        string instr = "0000000000000000";
-        for (const auto& word : row) {
-            if (iteration == 0) { // instruction name = op code
-                string opcode = op_code_mapping[word];
-                instr.replace(0, 4, opcode);
-                if (opcode == "0000") {
-                    instr.replace(12, 4, func_code_mapping[word]);
-                }
-            }
-            else {
-                int number = stoi(word);
-                if (number < 0 || number > 15) {
-                    throw std::out_of_range("Number must be between 0 and 15 for a 4-bit representation.");
-                }
+        if (row.empty()) continue;
 
-                std::bitset<4> b(number); // Convert to 4-bit binary
-                instr.replace(iteration*4, 4, b.to_string());
+        string instr = "0000000000000000";
+        for (size_t i = 0; i < row.size(); ++i) {
+            if (i == 0) { // Opcode
+                auto opcode = op_code_mapping.find(row[i]);
+                if (opcode == op_code_mapping.end()) {
+                    cerr << "Error: Invalid instruction '" << row[i] << "'" << endl;
+                    return 1;
+                }
+                instr.replace(0, 4, opcode->second);
+                if (opcode->second == "0000") { // R-Type
+                    auto func = func_code_mapping.find(row[i]);
+                    if (func != func_code_mapping.end()) {
+                        instr.replace(12, 4, func->second);
+                    }
+                }
+            } else { // Operands
+                int number = stoi(row[i]);
+                if (number < 0 || number > 15) { // Limit operands to 4 bits (0–15)
+                    cerr << "Error: Operand out of range (0–15): " << number << endl;
+                    return 1;
+                }
+                bitset<4> b(number);
+                instr.replace(4 + (i - 1) * 4, 4, b.to_string());
             }
-            //std::cout << word << " ";
-            iteration++;
         }
-        
-        std::cout << instr << std::endl;
         binary.push_back(instr);
     }
+    // for (const auto& row : instructions) {
+    //     int iteration = 0;
+    //     string instr = "0000000000000000";
+    //     for (const auto& word : row) {
+    //         if (iteration == 0) { // instruction name = op code
+    //             string opcode = op_code_mapping[word];
+    //             instr.replace(0, 4, opcode);
+    //             if (opcode == "0000") {
+    //                 instr.replace(12, 4, func_code_mapping[word]);
+    //             }
+    //         }
+    //         else {
+    //             int number = stoi(word);
+    //             if (number < 0 || number > 15) {
+    //                 throw std::out_of_range("Number must be between 0 and 15 for a 4-bit representation.");
+    //             }
+
+    //             std::bitset<4> b(number); // Convert to 4-bit binary
+    //             instr.replace(iteration*4, 4, b.to_string());
+    //         }
+    //         //std::cout << word << " ";
+    //         iteration++;
+    //     }
+        
+    //     std::cout << instr << std::endl;
+    //     binary.push_back(instr);
+    // }
     std::cout << "Enter the name of the output file: ";
     std::cin >> filename;
     saveToFile(binary, filename);
