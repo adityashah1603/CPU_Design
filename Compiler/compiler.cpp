@@ -61,6 +61,36 @@ unordered_map<string, string> op_code_mapping = {
     {"mfhi", "1101"}
 };
 
+unordered_map<string, string> type_mapping = {
+    {"add", "r"},
+    {"sub", "r"},
+    {"or", "r"},
+    {"and", "r"},
+    {"not", "r"},
+    {"xor", "r"},
+    {"mult", "r"},
+    {"div", "r"},
+    {"slt", "r"},
+    {"sgt", "r"},
+    {"seq", "r"},
+    {"sll", "r"},
+    {"srl", "r"},
+    {"sw", "m"},
+    {"lw", "m"},
+    {"j", "j"},
+    {"jr", "jr"},
+    {"jal", "j"},
+    {"lui", "i"},
+    {"addi", "i"},
+    {"bis", "i"},
+    {"bns", "i"},
+    {"lui", "i"},
+    {"li", "i"},
+    {"mflo", "r"},
+    {"mfhi", "r"}
+};
+
+
 unordered_map<string, string> func_code_mapping = {
         {"add", "0000"},
         {"sub", "0001"},
@@ -137,7 +167,9 @@ int main() {
         if (row.empty()) continue;
 
         string instr = "0000000000000000";
+        string instrtype = "";
         for (size_t i = 0; i < row.size(); ++i) {
+            string word = row[i];
             if (i == 0) { // Opcode
                 auto opcode = op_code_mapping.find(row[i]);
                 if (opcode == op_code_mapping.end()) {
@@ -145,6 +177,7 @@ int main() {
                     return 1;
                 }
                 instr.replace(0, 4, opcode->second);
+                instrtype = type_mapping[row[i]];
                 if (opcode->second == "0000") { // R-Type
                     auto func = func_code_mapping.find(row[i]);
                     if (func != func_code_mapping.end()) {
@@ -152,14 +185,18 @@ int main() {
                     }
                 }
             } else { // Operands
-                int number = stoi(word);
-                if (number > 15) {
+                int number = stoi(row[i]);
+                if (instrtype == "i" && i == 2) {
                     std::bitset<8> b(number); // Convert to 4-bit binary
-                    instr.replace(iteration*4, 8, b.to_string());
+                    instr.replace(i*4, 8, b.to_string());
+                }
+                else if (instrtype == "j" && i == 1) {
+                    std::bitset<12> b(number); // Convert to 4-bit binary
+                    instr.replace(i*4, 12, b.to_string());
                 }
                 else {
                     std::bitset<4> b(number); // Convert to 4-bit binary
-                    instr.replace(iteration*4, 4, b.to_string());
+                    instr.replace(i*4, 4, b.to_string());
                 }
             }
         }
