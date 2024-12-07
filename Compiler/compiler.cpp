@@ -56,7 +56,9 @@ unordered_map<string, string> op_code_mapping = {
     {"addi", "0111"},
     {"bis", "1000"},
     {"bns", "1001"},
-    {"li", "1011"}
+    {"li", "1011"},
+    {"mflo", "1100"},
+    {"mfhi", "1101"}
 };
 
 unordered_map<string, string> func_code_mapping = {
@@ -150,13 +152,15 @@ int main() {
                     }
                 }
             } else { // Operands
-                int number = stoi(row[i]);
-                if (number < 0 || number > 15) { // Limit operands to 4 bits (0–15)
-                    cerr << "Error: Operand out of range (0–15): " << number << endl;
-                    return 1;
+                int number = stoi(word);
+                if (number > 15) {
+                    std::bitset<8> b(number); // Convert to 4-bit binary
+                    instr.replace(iteration*4, 8, b.to_string());
                 }
-                bitset<4> b(number);
-                instr.replace(4 + (i - 1) * 4, 4, b.to_string());
+                else {
+                    std::bitset<4> b(number); // Convert to 4-bit binary
+                    instr.replace(iteration*4, 4, b.to_string());
+                }
             }
         }
         binary.push_back(instr);
