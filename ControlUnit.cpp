@@ -107,7 +107,78 @@ ALUOperations ControlUnit::functToALUOperation(const uint8_t funct) {
 void ControlUnit::decodeOpcode() {
     clearControlSignals();
     switch(opcode) {
-    
+    case(0b0000): // R-Type Instruction
+        control.dm2reg = false;
+        control.reg_dst = true;
+        control.alu_src = false;
+        control.jump = false;
+        control.branch = false;
+        control.pc_src = false;
+        control.we_dm = false;
+        control.we_reg = true;
+        alu_op = 0b10;
+        break;
+
+    case(0b0010): // Load Instruction
+        control.dm2reg = true;
+        control.reg_dst = false;
+        control.alu_src = true;
+        control.jump = false;
+        control.branch = false;
+        control.pc_src = false;
+        control.we_dm = false;
+        control.we_reg = true;
+        alu_op = 0b00;
+        break;
+
+    case(0b0001): // Save Instruction
+        control.dm2reg = false;
+        control.reg_dst = false;
+        control.alu_src = true;
+        control.jump = false;
+        control.branch = false;
+        control.pc_src = false;
+        control.we_dm = true;
+        control.we_reg = false;
+        alu_op = 0b00;
+        break;
+
+    case(0b0011): // I-Type Instruction
+        control.dm2reg = false;
+        control.reg_dst = false;
+        control.alu_src = true;
+        control.jump = false;
+        control.branch = false;
+        control.pc_src = false;
+        control.we_dm = false;
+        control.we_reg = true;
+        alu_op = 0b00;
+        break;
+
+    case(0b0100): // Branch Instruction
+        control.dm2reg = false;
+        control.reg_dst = false;
+        control.alu_src = false;
+        control.jump = false;
+        control.branch = true;
+        control.pc_src = false;
+        control.we_dm = false;
+        control.we_reg = false;
+        alu_op = 0b01;
+        break;
+
+    case(0b0101): // Jump Instruction
+        control.dm2reg = false;
+        control.reg_dst = false;
+        control.alu_src = false;
+        control.jump = true;
+        control.branch = false;
+        control.pc_src = false;
+        control.we_dm = false;
+        control.we_reg = false;
+        alu_op = 0b01;
+        break;
+=======
     // case(0b0000): // R-Type Instruction
     //     control.dm2reg = false;
     //     control.reg_dst = true;
@@ -179,6 +250,7 @@ void ControlUnit::decodeOpcode() {
     //     control.we_reg = false;
     //     alu_op = 0b01;
     //     break;
+  
     case 0b0000: // R-Type
             control = {false, true, false, false, false, false, false, true, functToALUOperation(funct)};
             break;
@@ -204,7 +276,6 @@ void ControlUnit::decodeOpcode() {
         default:
             cerr << "Error: Invalid opcode" << endl;
             throw invalid_argument("Invalid opcode");
-
     }
 
     // switch(alu_op) {

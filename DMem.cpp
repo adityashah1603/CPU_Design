@@ -2,7 +2,6 @@
 
 DataMemory::DataMemory() {
     data.resize(UINT16_MAX);
-    we_dm = false; 
 }
 
 uint16_t DataMemory::getData(const uint16_t &address) {
@@ -13,7 +12,7 @@ uint16_t DataMemory::getData(const uint16_t &address) {
     return returnData;
 }
 
-void DataMemory::writeDataToMemory(const uint16_t &address, const uint16_t &writeData) {
+void DataMemory::writeDataToMemory(const uint16_t &address, const uint16_t &writeData, bool we_dm) {
     if(we_dm) {
         data[address] = writeData;
     }

@@ -14,7 +14,7 @@ using std::cerr;
 using std::endl;
 
 
-void compute(ALUOperation func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero) {
+void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero) {
     overflow = 0;
     switch (func) {
         case 0: // add
