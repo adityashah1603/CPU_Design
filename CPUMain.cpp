@@ -25,11 +25,12 @@ static const uint16_t jumpAddressMask {0x0FFF};
 static const uint16_t functMask {0x000F};
 static const uint16_t offsetMask {0x000F};
 static const uint16_t immediateMask {0x00FF};
+static const uint16_t returnAddressRegister { 14 };
+static const uint16_t stackPointer { 15 };
 
 static uint16_t programCounter {0x0000};
 static uint16_t instructionRegister {0xFFFF};
-static uint16_t returnAddressRegister {0x0000};
-static uint16_t stackPointerRegister {0xFFFF};
+
 static uint16_t hiRegister {0x0000};
 static uint16_t loRegister {0x0000};
 
@@ -70,38 +71,56 @@ int main() {
         ControlModule.setFunct(funct);
         ControlModule.decodeOpcode();
         ControlSignals instructionSignals = ControlModule.getControlSignals();
-        if(opcode == 0b0011) { // Jump Instruction
-            jumpAddr = instructionRegister & jumpAddressMask;
+        if(opcode == 0b0011) { // I-Type Instruction
+            destReg = (instructionRegister & destinationRegMask) >> 8;
+            immediateValue = instructionRegister & immediateMask;
         }
-        else if(opcode == 0b0011) { // I-Type Instruction
-            destReg = (instructionRegister & destinationRegMask) > 8;
-            immediateValue = instructionRegister & immediateValue;
-        }
-        else {
+        else { // R-Type Instruction
             sourceReg = (instructionRegister & sourceRegMask) >> 4;
             destReg = (instructionRegister & destinationRegMask) >> 8;
         }
 
+        if(instructionSignals.jump) {
+            programCounter = instructionRegister & jumpAddressMask;
+            continue;
+        }
+
         // EXECUTE INSTRUCTION
-        int16_t ALUOp1 {RegFileModule.readRegister(destReg)};
-        int16_t ALUOp2;
+        int16_t destRegData {RegFileModule.readRegister(destReg)};
+        int16_t sourceRegData;
         int16_t ALUResult;
 
         if(instructionSignals.alu_src) {
-            ALUOp2 = immediateValue;
+            sourceRegData = immediateValue;
         }
         else {
-            ALUOp2 = RegFileModule.readRegister(sourceReg);
+            sourceRegData = RegFileModule.readRegister(sourceReg);
         }
 
-        ALUModule.compute(instructionSignals.alu_ctrl, ALUOp1, ALUOp2, ALUResult, flagRegister.overflow, flagRegister.zero);
+        ALUModule.compute(instructionSignals.alu_ctrl, destRegData, sourceRegData, ALUResult, flagRegister.overflow, flagRegister.zero);
         
+        // MEMORY STAGE
+        DMemModule.writeDataToMemory(ALUResult, sourceRegData, instructionSignals.we_dm);
 
 
-        
+        // WRITE BACK STAGE
+        uint16_t dataMemData {DMemModule.getData(ALUResult)};
 
+        if(!instructionSignals.dm2reg && instructionSignals.reg_dst) { // JAL instruction saves next address to $ra register (14)
+            RegFileModule.writeRegister(returnAddressRegister, ALUResult, instructionSignals.we_reg);
+        }
+        else if(instructionSignals.dm2reg && !instructionSignals.reg_dst) { // LW instruction gets data from DMem to destReg
+            RegFileModule.writeRegister(destReg, dataMemData, instructionSignals.we_reg);
+        }
+        else {
+            RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg); // R and I Type Instructions
+        }
 
+        programCounter++;
     }
 
+    cout << "Program has finished execution. Final register values displayed below." << endl;
+    RegFileModule.displayRegisters();
+    
     return 1;
 }

@@ -2,10 +2,9 @@
 
 RegisterFile::RegisterFile(int numRegisters) {
         registers.resize(numRegisters, 0); // Initialize all registers to 0
-        we_reg = false;
     }
 
-void RegisterFile::writeRegister(uint16_t regNum, uint16_t value) {
+void RegisterFile::writeRegister(uint16_t regNum, uint16_t value, bool we_reg) {
         if (regNum >= 0 && regNum < registers.size() && we_reg) {
             registers[regNum] = value;
         } else {
