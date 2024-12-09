@@ -14,10 +14,10 @@ public:
     ~InstructionMemory() { InstructionFile.close(); }
     bool openInstructionFile(const char* filename);
     void loadInstructionsFromFile();
-    uint16_t getInstruction(const uint16_t &address);
+    int16_t getInstruction(const int16_t &address);
 private:
     ifstream InstructionFile;
-    vector<uint16_t> instructions;
+    vector<int16_t> instructions;
     int instructionCount;
     bool instructionsLoaded;
 };

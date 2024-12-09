@@ -40,7 +40,7 @@ void InstructionMemory::loadInstructionsFromFile() {
     }
     else {
         string fileLine;
-        uint16_t instructionAddress {0};
+        int16_t instructionAddress {0};
         while(getline(InstructionFile, fileLine)) {
             instructions[instructionAddress] = stoi(fileLine, 0, 2); // Stores instructions in binary format
             instructionAddress++;
@@ -50,8 +50,8 @@ void InstructionMemory::loadInstructionsFromFile() {
         }
 }
 
-uint16_t InstructionMemory::getInstruction(const uint16_t &address) {
-    uint16_t returnInstruction {0b0};
+int16_t InstructionMemory::getInstruction(const int16_t &address) {
+    int16_t returnInstruction {0b0};
     if(address < instructionCount && instructionsLoaded) {
         returnInstruction = instructions[address];
     }

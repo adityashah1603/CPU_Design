@@ -8,14 +8,14 @@
 #include <cstdint>
 #include <limits>
 #include<iostream>
-#include<ALU.h>
-
+#include "ALU.h"
 using std::cerr;
 using std::endl;
 
 
-void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero, int16_t& hi) {
+void ALU::compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, bool& overflow, bool &zero, int16_t hi) {
     overflow = 0;
+    int32_t result32;
     switch (func) {
         case 0: // add
             result = op1+op2;
@@ -45,7 +45,7 @@ void compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result, boo
             result = op1 ^ op2;
             break;
         case 6: // mult
-            int32_t result32 = (int32_t)op1 * (int32_t)op2;
+            result32 = (int32_t)op1 * (int32_t)op2;
             result = (int16_t)result32;
             hi = (int16_t)(result32>>16);
             overflow = 0;

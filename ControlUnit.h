@@ -32,19 +32,19 @@ struct ControlSignals{
 class ControlUnit {
 public:
     ControlUnit();
-    void setOpcode(uint8_t inputOpcode);
-    void setFunct(uint8_t inputFunct);
+    void setOpcode(int8_t inputOpcode);
+    void setFunct(int8_t inputFunct);
     void printControls() const;
     void decodeOpcode();
     ControlSignals getControlSignals() const { return control; }
 
 private:
-    uint8_t opcode;
-    uint8_t funct;
-    uint8_t alu_op;
+    int8_t opcode;
+    int8_t funct;
+    int8_t alu_op;
     ControlSignals control;
 
 
     void clearControlSignals();
-    ALUOperations functToALUOperation(const uint8_t funct);
+    ALUOperations functToALUOperation(const int8_t funct);
 };

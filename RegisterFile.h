@@ -7,11 +7,11 @@
 
 class RegisterFile {
 private:
-    std::vector<uint16_t> registers; // Array to hold the registers
+    std::vector<int16_t> registers; // Array to hold the registers
 public:
     RegisterFile(int numRegisters);
 
-    void writeRegister(uint16_t regNum, uint16_t value, bool we_reg);
-    uint16_t readRegister(uint16_t regNum);
+    void writeRegister(int16_t regNum, int16_t value, bool we_reg);
+    int16_t readRegister(int16_t regNum);
     void displayRegisters();
 };
