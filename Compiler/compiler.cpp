@@ -56,9 +56,9 @@ unordered_map<string, string> op_code_mapping = {
     {"addi", "0111"},
     {"bis", "1000"},
     {"bns", "1001"},
-    {"li", "1011"},
-    {"mflo", "1100"},
-    {"mfhi", "1101"}
+    {"li", "1010"},
+    {"mflo", "1011"},
+    {"mfhi", "1100"}
 };
 
 unordered_map<string, string> type_mapping = {

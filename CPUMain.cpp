@@ -25,6 +25,7 @@ static const int16_t jumpAddressMask {0x0FFF};
 static const int16_t functMask {0x000F};
 static const int16_t offsetMask {0x000F};
 static const int16_t immediateMask {0x00FF};
+static const int16_t shamtMask {0x00F0};
 static const int16_t returnAddressRegister { 14 };
 static const int16_t stackPointer { 15 };
 
@@ -58,10 +59,7 @@ int main() {
     while(instructionRegister != 0) { 
         // FETCH INSTRUCTION
         instructionRegister = IMemModule.getInstruction(programCounter);
-        if(instructionRegister) {
-            programCounter++;
-        }
-        else {
+        if(!instructionRegister) {
             continue;
         }
         // DECODE INSTRUCTION
@@ -70,6 +68,7 @@ int main() {
         int16_t jumpAddr {0};
         int8_t immediateValue {0};
         int8_t offsetValue {0};
+        int8_t shiftAmount {0};
 
         int8_t opcode {static_cast<int8_t>((instructionRegister & opcodeMask) >> 12)};
         int8_t funct;
@@ -87,6 +86,9 @@ int main() {
         if(opcode == 0b0000) { // R-Type Instructions
             sourceReg = (instructionRegister & sourceRegMask) >> 4;
             destReg = (instructionRegister & destinationRegMask) >> 8;
+            if(instructionSignals.alu_ctrl == ALU_SLL || instructionSignals.alu_ctrl == ALU_SRL) {
+                shiftAmount = (instructionRegister & shamtMask) >> 4; // Shift instructions use the Rs slot for a shift amount
+            }
         }
         else { // I-Type Instructions
             destReg = (instructionRegister & destinationRegMask) >> 8;
@@ -97,8 +99,8 @@ int main() {
             }
         }
 
-        if(instructionSignals.jump) {
-            programCounter = instructionRegister & jumpAddressMask;
+        if(instructionSignals.jump) { // For jump instructions, save the jump Address
+            jumpAddr = instructionRegister & jumpAddressMask;
         }
         // EXECUTE INSTRUCTION
         int16_t destRegData {RegFileModule.readRegister(destReg)};
@@ -117,14 +119,35 @@ int main() {
                 ALUOp2 = immediateValue;
             }
         }
-        else { // R-Type
-            ALUOp1 = destRegData;
-            ALUOp2 = sourceRegData;
+        else {
+            if(instructionSignals.jal) { // JAL instruction will save current PC + 1 (already incremented at line 62) to RA register
+                ALUOp1 = programCounter;
+                ALUOp2 = 0;
+            }
+            else { // R-Type
+                ALUOp1 = destRegData;
+                if(instructionSignals.alu_ctrl == ALU_SLL || instructionSignals.alu_ctrl == ALU_SRL) {
+                    ALUOp2 = shiftAmount;
+                }
+                else {
+                    ALUOp2 = sourceRegData;
+                }
+            }
         }
-
 
         ALUModule.compute(instructionSignals.alu_ctrl, ALUOp1, ALUOp2, ALUResult, flagRegister.overflow, flagRegister.zero, hiRegister);
         
+        if(instructionSignals.jump) { // J-Type instructions
+            programCounter = jumpAddr;
+        }
+        else if(instructionSignals.branch & flagRegister.zero) { // Branch if set
+            programCounter++;
+            programCounter += branchOffset;
+        }
+        else {
+            programCounter++;
+        }
+
         // MEMORY STAGE
         DMemModule.writeDataToMemory(ALUResult, destRegData, instructionSignals.we_dm);
 
@@ -136,6 +159,12 @@ int main() {
         }
         else if(instructionSignals.dm2reg && !instructionSignals.reg_dst) { // LW instruction gets data from DMem to destReg
             RegFileModule.writeRegister(destReg, dataMemData, instructionSignals.we_reg);
+        }
+        else if(instructionSignals.mfhi) { // MFHI moves contents of hi register to destination
+            RegFileModule.writeRegister(destReg, hiRegister, instructionSignals.we_reg);
+        }
+        else if(instructionSignals.mflo) { // MFLO moves contents of lo register to destination
+            RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg);
         }
         else {
             RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg); // R and I Type Instructions

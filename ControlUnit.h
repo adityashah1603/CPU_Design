@@ -26,6 +26,7 @@ struct ControlSignals{
     bool pc_src;
     bool we_dm;
     bool we_reg;
+    bool jal;
     ALUOperations alu_ctrl;
 };
 
