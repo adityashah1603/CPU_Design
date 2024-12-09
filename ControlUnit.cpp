@@ -95,33 +95,33 @@ void ControlUnit::decodeOpcode() {
         case 0b0011: // Jump
             control.jump = true;
             break;
-        case 0b0100: // Jump Register
-            control = 
-            break;
-        case 0b0101: // Jump and Link
-            control = {false, true, }
-            break;
-        case 0b0110: // Load upper immediate
-            control = 
-            break;
+        // case 0b0100: // Jump Register
+        //     control = 
+        //     break;
+        // case 0b0101: // Jump and Link
+        //     control = {false, true, }
+        //     break;
+        // case 0b0110: // Load upper immediate
+        //     control = 
+        //     break;
         case 0b0111: // addi
             control = {false, false, true, false, false, false, false, true, false, ALU_ADD};
             break;
-        case 0b1000: // Branch if set
-            control = 
-            break;
-        case 0b1001: // Branch if not set
-            control = 
-            break;
-        case 0b1010: // Load immediate
-            control =
-            break;
-        case 0b1011: // Move from hi
-            control = 
-            break;
-        case 0b1100: // Move from lo
-            control = 
-            break;
+        // case 0b1000: // Branch if set
+        //     control = 
+        //     break;
+        // case 0b1001: // Branch if not set
+        //     control = 
+        //     break;
+        // case 0b1010: // Load immediate
+        //     control =
+        //     break;
+        // case 0b1011: // Move from hi
+        //     control = 
+        //     break;
+        // case 0b1100: // Move from lo
+        //     control = 
+        //     break;
         default:
             cerr << "Error: Invalid opcode" << endl;
     }

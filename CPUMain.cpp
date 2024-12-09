@@ -24,6 +24,7 @@ static const int16_t sourceRegMask {0x00F0};
 static const int16_t jumpAddressMask {0x0FFF};
 static const int16_t functMask {0x000F};
 static const int16_t offsetMask {0x000F};
+static const int16_t branchOffsetMask {0x00FF};
 static const int16_t immediateMask {0x00FF};
 static const int16_t shamtMask {0x00F0};
 static const int16_t returnAddressRegister { 14 };
@@ -69,6 +70,7 @@ int main() {
         int8_t immediateValue {0};
         int8_t offsetValue {0};
         int8_t shiftAmount {0};
+        int8_t branchOffset {0};
 
         int8_t opcode {static_cast<int8_t>((instructionRegister & opcodeMask) >> 12)};
         int8_t funct;
@@ -96,6 +98,9 @@ int main() {
             immediateValue = (instructionRegister & immediateMask);
             if(opcode == 0b0001 || opcode == 0b0010) { // LW and SW need to save offset
                 offsetValue = instructionRegister & offsetMask;
+            }
+            if(instructionSignals.branch) {
+                branchOffset = instructionRegister & branchOffsetMask;
             }
         }
 
@@ -160,12 +165,12 @@ int main() {
         else if(instructionSignals.dm2reg && !instructionSignals.reg_dst) { // LW instruction gets data from DMem to destReg
             RegFileModule.writeRegister(destReg, dataMemData, instructionSignals.we_reg);
         }
-        else if(instructionSignals.mfhi) { // MFHI moves contents of hi register to destination
-            RegFileModule.writeRegister(destReg, hiRegister, instructionSignals.we_reg);
-        }
-        else if(instructionSignals.mflo) { // MFLO moves contents of lo register to destination
-            RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg);
-        }
+        // else if(instructionSignals.mfhi) { // MFHI moves contents of hi register to destination
+        //     RegFileModule.writeRegister(destReg, hiRegister, instructionSignals.we_reg);
+        // }
+        // else if(instructionSignals.mflo) { // MFLO moves contents of lo register to destination
+        //     RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg);
+        // }
         else {
             RegFileModule.writeRegister(destReg, ALUResult, instructionSignals.we_reg); // R and I Type Instructions
         }
