@@ -4,12 +4,12 @@
 using std::endl;
 
 DataMemory::DataMemory() {
-    data.resize(UINT16_MAX);
+    data.resize(32000);
 }
 
 int16_t DataMemory::getData(const int16_t &address) {
     int16_t returnData {0};
-    if(address < UINT16_MAX) {
+    if(address < 32000) {
         returnData = data[address];
     }
     return returnData;

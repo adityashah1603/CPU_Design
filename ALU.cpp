@@ -19,6 +19,7 @@ void ALU::compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result
     switch (func) {
         case 0: // add
             result = op1+op2;
+            //std::cout << "op1 = " << op1 << " op2 = " << op2 << std::endl;
             if (op2 > 0 && op1 > (std::numeric_limits<int16_t>::max() - op2)) {
                 overflow = 1; // Positive overflow
             }
@@ -45,6 +46,7 @@ void ALU::compute(ALUOperations func, int16_t &op1, int16_t op2, int16_t& result
             result = op1 ^ op2;
             break;
         case 6: // mult
+            std::cout << "op1 = " << op1 << " op2 = " << op2 << std::endl;
             result32 = (int32_t)op1 * (int32_t)op2;
             result = (int16_t)result32;
             hi = (int16_t)(result32>>16);

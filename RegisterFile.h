@@ -11,7 +11,7 @@ private:
 public:
     RegisterFile(int numRegisters);
 
-    void writeRegister(int16_t regNum, int16_t value, bool we_reg);
-    int16_t readRegister(int16_t regNum);
+    void writeRegister(uint16_t regNum, int16_t value, bool we_reg);
+    int16_t readRegister(uint16_t regNum);
     void displayRegisters();
 };

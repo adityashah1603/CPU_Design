@@ -56,9 +56,9 @@ unordered_map<string, string> op_code_mapping = {
     {"addi", "0111"},
     {"bis", "1000"},
     {"bns", "1001"},
-    {"li", "1010"},
-    {"mflo", "1011"},
-    {"mfhi", "1100"}
+    {"li", "1011"},
+    {"mflo", "1100"},
+    {"mfhi", "1101"}
 };
 
 unordered_map<string, string> type_mapping = {
@@ -73,21 +73,20 @@ unordered_map<string, string> type_mapping = {
     {"slt", "r"},
     {"sgt", "r"},
     {"seq", "r"},
-    {"sll", "r"},
-    {"srl", "r"},
-    {"sw", "m"},
-    {"lw", "m"},
+    {"sll", "r"}, //special
+    {"srl", "r"}, //special
+    {"sw", "m"}, //special
+    {"lw", "m"}, //special
     {"j", "j"},
-    {"jr", "jr"},
+    {"jr", "jr"}, //special
     {"jal", "j"},
     {"lui", "i"},
     {"addi", "i"},
     {"bis", "i"},
     {"bns", "i"},
-    {"lui", "i"},
     {"li", "i"},
-    {"mflo", "r"},
-    {"mfhi", "r"}
+    {"mflo", "r"}, //special
+    {"mfhi", "r"} //special
 };
 
 
@@ -202,33 +201,7 @@ int main() {
         }
         binary.push_back(instr);
     }
-    // for (const auto& row : instructions) {
-    //     int iteration = 0;
-    //     string instr = "0000000000000000";
-    //     for (const auto& word : row) {
-    //         if (iteration == 0) { // instruction name = op code
-    //             string opcode = op_code_mapping[word];
-    //             instr.replace(0, 4, opcode);
-    //             if (opcode == "0000") {
-    //                 instr.replace(12, 4, func_code_mapping[word]);
-    //             }
-    //         }
-    //         else {
-    //             int number = stoi(word);
-    //             if (number < 0 || number > 15) {
-    //                 throw std::out_of_range("Number must be between 0 and 15 for a 4-bit representation.");
-    //             }
-
-    //             std::bitset<4> b(number); // Convert to 4-bit binary
-    //             instr.replace(iteration*4, 4, b.to_string());
-    //         }
-    //         //std::cout << word << " ";
-    //         iteration++;
-    //     }
-        
-    //     std::cout << instr << std::endl;
-    //     binary.push_back(instr);
-    // }
+ 
     std::cout << "Enter the name of the output file: ";
     std::cin >> filename;
     saveToFile(binary, filename);

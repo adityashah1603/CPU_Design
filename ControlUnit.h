@@ -13,6 +13,7 @@ typedef enum {
     ALU_DIV,
     ALU_SLT,
     ALU_SGT,
+    ALU_SEQ,
     ALU_SLL,
     ALU_SRL
 } ALUOperations;
@@ -27,6 +28,9 @@ struct ControlSignals{
     bool we_dm;
     bool we_reg;
     bool jal;
+    bool jr;
+    bool mflo;
+    bool mfhi;
     ALUOperations alu_ctrl;
 };
 
@@ -40,9 +44,9 @@ public:
     ControlSignals getControlSignals() const { return control; }
 
 private:
-    int8_t opcode;
-    int8_t funct;
-    int8_t alu_op;
+    uint8_t opcode;
+    uint8_t funct;
+    uint8_t alu_op;
     ControlSignals control;
 
 

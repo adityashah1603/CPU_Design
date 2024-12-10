@@ -1,27 +1,25 @@
-li 15 48
+li 15 64
 li 0 4
-jal 12
+jal 6
 li 1 0
 add 1 2
-j 54
-addi 15 -8
-sw 0 15 4
-sw 14 31 0
+j 25
+addi 15 -2
+sw 0 15 1
+sw 14 15 0
 li 3 0
-addi 3 0
+add 3 0
 li 4 2
 slt 3 4
-li 5 0
-seq 5 3
-bis 5 6
+bns 3 3
 li 2 1
-addi 15 8
+addi 15 2
 jr 14
 addi 0 -1
-jal 54
+jal 6
 lw 14 15 0
-lw 0 15 4
-addi 15 8
-mult 0 2
+lw 0 15 1
+addi 15 2
+mult 2 0
 mflo 2
 jr 14

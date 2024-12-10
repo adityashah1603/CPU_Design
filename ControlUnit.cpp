@@ -35,7 +35,6 @@ void ControlUnit::clearControlSignals() {
 ALUOperations ControlUnit::functToALUOperation(const int8_t funct) {
 
     ALUOperations returnOperation;
-    cout << "Inside functToALU" << endl;
     switch(funct) {
     case(0b0000):
         returnOperation = ALU_ADD;
@@ -74,54 +73,57 @@ ALUOperations ControlUnit::functToALUOperation(const int8_t funct) {
         returnOperation = ALU_SRL;
         break;
     default:
+        returnOperation = ALU_ADD;
         cerr<<"Error: Invalid function code"<<endl;
     }
-
     return returnOperation;
 }
 
 void ControlUnit::decodeOpcode() {
     clearControlSignals();
+    ALUOperations aluops = functToALUOperation(funct);
     switch(opcode) {
         case 0b0000: // R-Type
-            control = {false, false, false, false, false, false, false, true, false, functToALUOperation(funct)};
+            control = {false, false, false, false, false, false, false, true, false, false, false, false, aluops};
             break;
         case 0b0001: // Store
-            control = {false, false, true, false, false, false, true, false, false, ALU_ADD};
+            control = {false, false, true, false, false, false, true, false, false, false, false, false, ALU_ADD};
             break;
         case 0b0010: // Load
-            control = {true, false, true, false, false, false, false, true, false, ALU_ADD};
+            control = {true, false, true, false, false, false, false, true, false, false, false, false, ALU_ADD};
             break;
         case 0b0011: // Jump
             control.jump = true;
             break;
-        // case 0b0100: // Jump Register
-        //     control = 
-        //     break;
-        // case 0b0101: // Jump and Link
-        //     control = {false, true, }
-        //     break;
-        // case 0b0110: // Load upper immediate
-        //     control = 
-        //     break;
-        case 0b0111: // addi
-            control = {false, false, true, false, false, false, false, true, false, ALU_ADD};
+        case 0b0101: // JAL
+            control.jump = true;
+            control.jal = true;
             break;
-        // case 0b1000: // Branch if set
-        //     control = 
-        //     break;
-        // case 0b1001: // Branch if not set
-        //     control = 
-        //     break;
-        // case 0b1010: // Load immediate
-        //     control =
-        //     break;
-        // case 0b1011: // Move from hi
-        //     control = 
-        //     break;
-        // case 0b1100: // Move from lo
-        //     control = 
-        //     break;
+        case 0b0100: // Jump Register
+            control.jump = true;
+            control.jr = true;
+            break;
+        case 0b0110: //lui
+            control = {false, false, true, false, false, false, false, true, false, false, false, false, ALU_ADD};
+            break;
+        case 0b0111: //addi
+            control = {false, false, true, false, false, false, false, true, false, false, false, false, ALU_ADD};
+            break;
+        case 0b1000: //bis
+            control = {false, false, true, false, true, false, false, false, false, false, false, false, ALU_SEQ};
+            break;
+        case 0b1001: //bns
+            control = {false, false, true, false, true, false, false, false, false, false, false, false, ALU_SEQ};
+            break;
+        case 0b1011: //li
+            control = {false, false, true, false, false, false, false, true, false, false, false, false, ALU_ADD};
+            break;
+        case 0b1100: //mflo
+            control = {false, false, false, false, false, false, false, true, false, false, true, false, ALU_ADD};
+            break;
+        case 0b1101: //mfhi
+            control = {false, false, false, false, false, false, false, true, false, false, false, true, ALU_ADD};
+            break;
         default:
             cerr << "Error: Invalid opcode" << endl;
     }
@@ -141,4 +143,9 @@ void ControlUnit::printControls() const {
     cout << "dm2reg: " << control.dm2reg << endl;
     cout << "alu_op: " << control.alu_ctrl << endl;
     cout << "jump: " << control.jump << endl;
+    cout << "jal: " << control.jal << endl;
+    cout << "jr: " << control.jr << endl;
+    cout << "mflo: " << control.mflo << endl;
+    cout << "mfhi: " << control.mfhi << endl;
+
 }
