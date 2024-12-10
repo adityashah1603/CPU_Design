@@ -125,7 +125,7 @@ void saveToFile(const std::vector<std::string>& strings, const std::string& file
     outfile.close();
 }
 
-int main() {
+int compile() {
     // Input file name
     std::string filename;
     std::cout << "Enter the name of the text file: ";
