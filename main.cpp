@@ -6,6 +6,7 @@
 #include "ALU.h"
 #include "DMem.h"
 #include "IMem.h"
+#include <bitset>
 
 using std::cout;
 using std::cin;
